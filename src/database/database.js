@@ -1,24 +1,21 @@
-import { MongoClient, ObjectId } from "mongodb";
-import "dotenv/config";
+import { ObjectId } from "mongodb";
 
-async function dataHandler(queryString) {
-  const client = await MongoClient.connect(process.env.URI);
-  const db = client.db("sample_mflix");
-  let movies = db.collection("movies");
-
-  let queryType = queryString[1];
-  let query = queryString[0];
-  let data;
+async function dataHandler(collection, queryString) {
+  let queryType = Array.isArray(queryString)
+    ? queryString[1]
+    : queryString;
 
   try {
     if (queryType === "findOne") {
-      data = await movies.findOne({ _id: new ObjectId(query) });
+      const id = queryString[0];
+      return await collection.findOne({ _id: new ObjectId(id) });
+    } else if (queryType === "findMany") {
+      const limit = Number(queryString[0]);
+      return await collection.find().limit(limit).toArray();
     }
   } catch (error) {
     console.error(error);
-  } finally {
-    client.close();
-    return data;
+    throw error;
   }
 }
 

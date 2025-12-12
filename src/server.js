@@ -1,21 +1,39 @@
 import "dotenv/config";
 import express, { json } from "express";
 import cors from "cors";
-import { handleRead } from "./middleware/logic.js";
+import {
+  handleSingleGet,
+  handleMultipleGet,
+} from "./middleware/logic.js";
+import { MongoClient } from "mongodb";
+import "dotenv/config";
 
 const port = process.env.PORT ?? 8000;
 const app = express();
 app.use(express.json());
 app.use(cors());
+const client = new MongoClient(process.env.URI);
+let collection;
 
-app.get("/movie/:id", handleRead, (req, res) => {
+async function connectDB() {
+  await client.connect();
+  let db = client.db("sample_mflix");
+  collection = db.collection("movies");
+  console.log("Database connected");
+}
+app.use((req, res, next) => {
+  req.db = collection;
+  next();
+});
+
+app.get("/movie/:id", handleSingleGet, (req, res) => {
   res.json({
     result: "done",
     data: res.result,
   });
 });
 
-app.get("/movies", handleRead, (req, res) => {
+app.get("/movies/:limit", handleMultipleGet, (req, res) => {
   res.json({
     result: "done",
     data: res.result,
@@ -37,6 +55,14 @@ app.delete("/:movie", (req, res) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).send("Something broke!");
+});
+
+await connectDB();
+// Graceful shutdown
+process.on("SIGINT", async () => {
+  console.log("Closing database connection...");
+  await client.close();
+  process.exit();
 });
 
 app.listen(port, () => {
