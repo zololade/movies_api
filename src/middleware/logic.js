@@ -27,7 +27,8 @@ async function handleMultipleGet(req, res, next) {
       return res.status(400).json({ error: "Limit is too large" });
     }
 
-    const data = await dataHandler([limit, "findMany"]);
+    const data = await dataHandler(req.db, [limit, "findMany"]);
+
     if (!data) return res.status(404).json({ error: "Data error" });
 
     res.result = data;

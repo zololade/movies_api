@@ -11,6 +11,7 @@ async function dataHandler(collection, queryString) {
       return await collection.findOne({ _id: new ObjectId(id) });
     } else if (queryType === "findMany") {
       const limit = Number(queryString[0]);
+
       return await collection.find().limit(limit).toArray();
     }
   } catch (error) {
