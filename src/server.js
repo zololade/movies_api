@@ -40,15 +40,15 @@ app.get("/movies/:limit", handleMultipleGet, (req, res) => {
   });
 });
 
-app.post("/:movies", (req, res) => {
+app.post("/movies", (req, res) => {
   res.send("hello");
 });
 
-app.patch("/:movie", (req, res) => {
+app.patch("/movies/:id", (req, res) => {
   res.send(req.params);
 });
 
-app.delete("/:movie", (req, res) => {
+app.delete("/movies/:id", (req, res) => {
   res.send("hello");
 });
 
