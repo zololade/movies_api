@@ -1,4 +1,7 @@
-import { dataHandler } from "../database/database.js";
+import {
+  findDataHandler,
+  postDataHandler,
+} from "../database/database.js";
 import { ObjectId } from "mongodb";
 
 //get middleware
@@ -9,7 +12,7 @@ async function handleSingleGet(req, res, next) {
       return res.status(400).json({ error: "Invalid movie ID" });
     }
 
-    const data = await dataHandler(req.db, [id, "findOne"]);
+    const data = await findDataHandler(req.db, [id, "findOne"]);
     if (!data)
       return res.status(404).json({ error: "Movie not found" });
 
@@ -27,7 +30,7 @@ async function handleMultipleGet(req, res, next) {
       return res.status(400).json({ error: "Limit is too large" });
     }
 
-    const data = await dataHandler(req.db, [limit, "findMany"]);
+    const data = await findDataHandler(req.db, [limit, "findMany"]);
 
     if (!data) return res.status(404).json({ error: "Data error" });
 
@@ -40,6 +43,7 @@ async function handleMultipleGet(req, res, next) {
 
 async function handlePost(req, res, next) {
   try {
+    postDataHandler(req.db, req.body);
     next();
   } catch (err) {
     next(err);

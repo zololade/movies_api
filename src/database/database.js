@@ -1,6 +1,6 @@
 import { ObjectId } from "mongodb";
 
-async function dataHandler(collection, queryString) {
+async function findDataHandler(collection, queryString) {
   let queryType = Array.isArray(queryString)
     ? queryString[1]
     : queryString;
@@ -19,4 +19,18 @@ async function dataHandler(collection, queryString) {
   }
 }
 
-export { dataHandler };
+async function postDataHandler(collection, postBody) {
+  try {
+    if (!Array.isArray(postBody)) {
+      await collection.insertOne(postBody);
+      console.log("done");
+    } else {
+      await collection.insertMany(postBody);
+    }
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export { findDataHandler, postDataHandler };

@@ -1,6 +1,8 @@
 import "dotenv/config";
 import express, { json } from "express";
 import cors from "cors";
+import schema from "./schema/validator.js";
+import { PostBodySchema } from "./schema/zodSchema.js";
 import {
   handleSingleGet,
   handleMultipleGet,
@@ -41,8 +43,9 @@ app.get("/movies/:limit", handleMultipleGet, (req, res) => {
   });
 });
 
-app.post("/movies", handlePost, (req, res) => {
-  res.json({ greeting: "hello" });
+app.post("/movie", schema(PostBodySchema), handlePost, (req, res) => {
+  // res.json({ greeting: "hello from post" });
+  res.json(req.body);
 });
 
 app.patch("/movies/:id", (req, res) => {
@@ -50,7 +53,7 @@ app.patch("/movies/:id", (req, res) => {
 });
 
 app.delete("/movies/:id", (req, res) => {
-  res.json({ greeting: "hello" });
+  res.json({ greeting: "hello from delete" });
 });
 
 app.use((err, req, res, next) => {
