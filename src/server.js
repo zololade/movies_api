@@ -4,6 +4,7 @@ import cors from "cors";
 import {
   handleSingleGet,
   handleMultipleGet,
+  handlePost,
 } from "./middleware/logic.js";
 import { MongoClient } from "mongodb";
 import "dotenv/config";
@@ -40,8 +41,8 @@ app.get("/movies/:limit", handleMultipleGet, (req, res) => {
   });
 });
 
-app.post("/movies", (req, res) => {
-  res.send("hello");
+app.post("/movies", handlePost, (req, res) => {
+  res.json({ greeting: "hello" });
 });
 
 app.patch("/movies/:id", (req, res) => {
@@ -49,7 +50,7 @@ app.patch("/movies/:id", (req, res) => {
 });
 
 app.delete("/movies/:id", (req, res) => {
-  res.send("hello");
+  res.json({ greeting: "hello" });
 });
 
 app.use((err, req, res, next) => {
@@ -57,14 +58,22 @@ app.use((err, req, res, next) => {
   res.status(500).send("Something broke!");
 });
 
-await connectDB();
+async function startServer() {
+  await connectDB();
+
+  app.listen(port, () => {
+    console.log(`Movies app listening at http://localhost:${port}`);
+  });
+}
+
+startServer().catch((err) => {
+  console.error("Startup failed:", err);
+  process.exit(1);
+});
+
 // Graceful shutdown
 process.on("SIGINT", async () => {
   console.log("Closing database connection...");
   await client.close();
   process.exit();
-});
-
-app.listen(port, () => {
-  console.log(`Movies app listening at http://localhost:${port}`);
 });

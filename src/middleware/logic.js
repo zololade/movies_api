@@ -38,4 +38,12 @@ async function handleMultipleGet(req, res, next) {
   }
 }
 
-export { handleSingleGet, handleMultipleGet };
+async function handlePost(req, res, next) {
+  try {
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
+export { handleSingleGet, handleMultipleGet, handlePost };
