@@ -2,6 +2,7 @@ import {
   findDataHandler,
   postDataHandler,
   patchDataHandler,
+  deleteDataHandler,
 } from "../database/database.js";
 import { ObjectId } from "mongodb";
 
@@ -67,9 +68,26 @@ async function handlePatch(req, res, next) {
   }
 }
 
+async function handleDelete(req, res, next) {
+  try {
+    //req.param, req.body, req.db
+    const id = req.params.id;
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid movie ID" });
+    }
+    const data = await deleteDataHandler(id, req.db);
+    res.result = data;
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
 export {
   handleSingleGet,
   handleMultipleGet,
   handlePost,
   handlePatch,
+  handleDelete,
 };

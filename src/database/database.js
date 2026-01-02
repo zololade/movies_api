@@ -46,4 +46,21 @@ async function patchDataHandler(id, body, collection) {
   }
 }
 
-export { findDataHandler, postDataHandler, patchDataHandler };
+async function deleteDataHandler(id, collection) {
+  try {
+    let ID = new ObjectId(id);
+    let myQuery = { _id: ID };
+    let result = await collection.deleteOne(myQuery);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export {
+  findDataHandler,
+  postDataHandler,
+  patchDataHandler,
+  deleteDataHandler,
+};

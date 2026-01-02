@@ -8,6 +8,7 @@ import {
   handleMultipleGet,
   handlePost,
   handlePatch,
+  handleDelete,
 } from "./middleware/logic.js";
 import { MongoClient } from "mongodb";
 import "dotenv/config";
@@ -64,8 +65,11 @@ app.patch(
   }
 );
 
-app.delete("/movies/:id", (req, res) => {
-  res.json({ greeting: "hello from delete" });
+app.delete("/movie/:id", handleDelete, (req, res) => {
+  res.json({
+    param: req.params,
+    response: res.result,
+  });
 });
 
 app.use((err, req, res, next) => {
