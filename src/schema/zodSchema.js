@@ -44,4 +44,25 @@ const MultipleBodySchema = z.array(
     .strict()
 );
 
-export { PostBodySchema, MultipleBodySchema };
+const PatchBodySchema = z.object({
+  title: z.string().min(1).optional(),
+  plot: z.string().min(1).optional(),
+  genres: z.array(z.string().min(1)).min(1).optional(),
+  runtime: z.number().nonnegative().optional(),
+  cast: z.array(z.string().min(1)).min(1).optional(),
+  languages: z.array(z.string().min(1)).min(1).optional(),
+  released: z.iso.datetime().optional(),
+  directors: z.array(z.string().min(1)).min(1).optional(),
+  rated: z.string().optional(),
+  year: z.number().nonnegative().optional(),
+  countries: z.array(z.string().min(1)).min(1).optional(),
+  type: z.string().optional(),
+  imdb: z
+    .object({
+      rating: z.number().nonnegative().max(10),
+      votes: z.number().nonnegative(),
+    })
+    .optional(),
+});
+
+export { PostBodySchema, MultipleBodySchema, PatchBodySchema };

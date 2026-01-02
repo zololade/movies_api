@@ -1,6 +1,7 @@
 import {
   findDataHandler,
   postDataHandler,
+  patchDataHandler,
 } from "../database/database.js";
 import { ObjectId } from "mongodb";
 
@@ -50,4 +51,25 @@ async function handlePost(req, res, next) {
   }
 }
 
-export { handleSingleGet, handleMultipleGet, handlePost };
+async function handlePatch(req, res, next) {
+  try {
+    //req.param, req.body, req.db
+    const id = req.params.id;
+    if (!ObjectId.isValid(id)) {
+      return res.status(400).json({ error: "Invalid movie ID" });
+    }
+    const data = await patchDataHandler(id, req.body, req.db);
+    res.result = data;
+
+    next();
+  } catch (err) {
+    next(err);
+  }
+}
+
+export {
+  handleSingleGet,
+  handleMultipleGet,
+  handlePost,
+  handlePatch,
+};

@@ -33,4 +33,17 @@ async function postDataHandler(collection, postBody) {
   }
 }
 
-export { findDataHandler, postDataHandler };
+async function patchDataHandler(id, body, collection) {
+  try {
+    let ID = new ObjectId(id);
+    let myQuery = { _id: ID };
+    let newValue = { $set: body };
+    let result = await collection.updateOne(myQuery, newValue);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export { findDataHandler, postDataHandler, patchDataHandler };

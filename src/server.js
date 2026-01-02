@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { json } from "express";
+import express, { json, response } from "express";
 import cors from "cors";
 import schema from "./schema/validator.js";
 import * as zodSchema from "./schema/zodSchema.js";
@@ -7,6 +7,7 @@ import {
   handleSingleGet,
   handleMultipleGet,
   handlePost,
+  handlePatch,
 } from "./middleware/logic.js";
 import { MongoClient } from "mongodb";
 import "dotenv/config";
@@ -50,9 +51,18 @@ app.post("/movie", schema(zodSchema), handlePost, (req, res) => {
   });
 });
 
-app.patch("/movie/:id", (req, res) => {
-  res.send(req.params);
-});
+app.patch(
+  "/movie/:id",
+  schema(zodSchema),
+  handlePatch,
+  (req, res) => {
+    res.json({
+      param: req.params,
+      body: req.body,
+      response: res.result,
+    });
+  }
+);
 
 app.delete("/movies/:id", (req, res) => {
   res.json({ greeting: "hello from delete" });
