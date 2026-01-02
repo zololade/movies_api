@@ -1,5 +1,3 @@
-import { ZodError } from "zod";
-
 export default function schema(schemaLogic) {
   return function (req, res, next) {
     let result;

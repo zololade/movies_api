@@ -1,5 +1,5 @@
 import "dotenv/config";
-import express, { json, response } from "express";
+import express from "express";
 import cors from "cors";
 import schema from "./schema/validator.js";
 import * as zodSchema from "./schema/zodSchema.js";
